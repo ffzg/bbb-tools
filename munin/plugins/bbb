@@ -1,0 +1,24 @@
+#!/bin/sh
+
+if [ "$1" = "config" ]; then
+	echo 'graph_title BBB usage'
+	echo 'graph_category system'
+	echo 'graph_vlabel count'
+	
+	echo 'users.label users'
+	echo 'meetings.label meetings'
+	echo 'audio.label audio'
+
+	exit 0
+fi
+
+
+users=$(mongo --quiet mongodb://127.0.1.1:27017/meteor --eval "db.users.count({connectionStatus: 'online'})")
+echo users.value $users
+
+meetings=$(mongo --quiet mongodb://127.0.1.1:27017/meteor --eval "db.meetings.find()" | grep "meetingEnded\" : false," | wc -l)
+echo meetings.value $meetings
+
+audio=$(/opt/freeswitch/bin/fs_cli -x "show channels" | grep total | sed 's/ total.//')
+echo audio.value $audio
+
