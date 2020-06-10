@@ -16,7 +16,7 @@ fi
 users=$(mongo --quiet mongodb://127.0.1.1:27017/meteor --eval "db.users.count({connectionStatus: 'online'})")
 echo users.value $users
 
-meetings=$(mongo --quiet mongodb://127.0.1.1:27017/meteor --eval "db.meetings.find()" | grep "meetingEnded\" : false," | wc -l)
+meetings=$(mongo --quiet mongodb://127.0.1.1:27017/meteor --eval "DBQuery.shellBatchSize = 100000 ; db.meetings.find()" | grep "meetingEnded\" : false," | wc -l)
 echo meetings.value $meetings
 
 audio=$(/opt/freeswitch/bin/fs_cli -x "show channels" | grep total | sed 's/ total.//')
